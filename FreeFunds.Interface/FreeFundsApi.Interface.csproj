@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FreeFundsApi.Models\FreeFundsApi.Models.csproj" />
+    <ProjectReference Include="..\FreeFundsApi.ViewModels\FreeFundsApi.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

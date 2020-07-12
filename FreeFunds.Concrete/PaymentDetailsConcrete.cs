@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using FreeFundsApi.Interface;
 using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
-using System.Linq.Dynamic.Core;
 using Dapper;
+using System.Linq.Dynamic.Core;
 
 namespace FreeFundsApi.Concrete
 {

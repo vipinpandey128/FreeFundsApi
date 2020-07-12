@@ -1,5 +1,6 @@
 ﻿using FreeFundsApi.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace FreeFundsApi.Concrete
