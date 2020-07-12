@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeFundsApi", "FreeFundsApi\FreeFundsApi.csproj", "{DC90CC30-EDE7-4C05-9F4A-218AD21B6B4E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC90CC30-EDE7-4C05-9F4A-218AD21B6B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC90CC30-EDE7-4C05-9F4A-218AD21B6B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC90CC30-EDE7-4C05-9F4A-218AD21B6B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC90CC30-EDE7-4C05-9F4A-218AD21B6B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {02B68A4E-2C48-4035-BB0B-A695E9E7F5E0}
+	EndGlobalSection
+EndGlobal
