@@ -7,7 +7,6 @@ namespace FreeFundsApi.Models
     {
         public int Id { get; set; }
         public int MaxWithdrawalBal { get; set; }
-        [DefaultValue("true")]
         public int IsActive { get; set; }
     }
 }

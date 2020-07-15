@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace FreeFundsApi.Models
 {
-    [Table("Role")]
     public class Role
     {
-        [Key]
         public int RoleId { get; set; }
 
         [Required(ErrorMessage = "Enter Role name")]

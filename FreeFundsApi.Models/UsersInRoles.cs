@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace FreeFundsApi.Models
 {
-    [Table("UsersInRoles")]
     public class UsersInRoles
     {
-        [Key]
         public int UserRolesId { get; set; }
         public int RoleId { get; set; }
         public int UserId { get; set; }
+        public virtual Users Users { get; set; }
     }
 }

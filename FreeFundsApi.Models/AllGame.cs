@@ -6,10 +6,8 @@ using System.Text;
 
 namespace FreeFundsApi.Models
 {
-    [Table("AllGame")]
     public class AllGame
     {
-        [Key]
         public long GameId { get; set; }
         public string GameName { get; set; }
         public int SchemeId { get; set; }

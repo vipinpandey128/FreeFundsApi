@@ -9,7 +9,7 @@ namespace FreeFundsApi.Models
 {
     public class SchemeMaster
     {
-        [Key]
+       
         public int SchemeID { get; set; }
         public string SchemeName { get; set; }
         public int Createdby { get; set; }

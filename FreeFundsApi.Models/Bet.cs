@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace FreeFundsApi.Models
 {
@@ -14,9 +10,8 @@ namespace FreeFundsApi.Models
         public int CreatedBy { get; set; }
         public int BetAmount { get; set; }
         public DateTime CreatedDate { get; set; }
-        public bool Status { get; set; } = true;
+        public bool Status { get; set; }
         public int UserId { get; set; }
-        public Users Users { get; set; }
-
+        public virtual Users Users { get; set; }
     }
 }

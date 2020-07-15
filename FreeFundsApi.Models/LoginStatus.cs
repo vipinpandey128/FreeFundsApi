@@ -9,9 +9,9 @@ namespace FreeFundsApi.Models
     public class LoginStatus
     {
         public long LoginStatusId { get; set; }
-        public DateTime LastLogin { get; set; } = DateTime.Now;
+        public DateTime LastLogin { get; set; }
         public bool IsActive { get; set; } = true;
         public int UserId { get; set; }
-        public Users Users { get; set; }
+        public virtual Users Users { get; set; }
     }
 }

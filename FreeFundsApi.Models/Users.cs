@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace FreeFundsApi.Models
 {
-    [Table("Users")]
     public class Users
     {
-        [Key]
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
@@ -19,8 +17,16 @@ namespace FreeFundsApi.Models
         public string Contactno { get; set; }
         public string Password { get; set; }
         public int? Createdby { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public long CurrentBal { get; set; }
+        public bool IsTermsAndConditions { get; set; }
+        public bool IsPasswordUpdated { get; set; }
         public bool Status { get; set; }
+        public virtual List<LoginStatus> LoginStatus { get; set; }
+        public virtual List<Winning> Winnings { get; set; }
+        public virtual List<AllTransaction> AllTransactions { get; set; }
+        public virtual List<Bet> Bets { get; set; }
+        public virtual List<UsersInRoles> UsersInRoles { get; set; }
     }
 
 }
