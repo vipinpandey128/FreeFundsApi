@@ -12,5 +12,7 @@ namespace FreeFundsApi.ViewModels
         public string UserName { get; set; }
         public bool Status { get; set; }
         public int RoleId { get; set; }
+        public decimal CurrentBal { get; set; }
+
     }
 }

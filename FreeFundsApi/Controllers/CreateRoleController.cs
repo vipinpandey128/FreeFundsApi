@@ -21,12 +21,12 @@ namespace FreeFundsApi.Controllers
     public class CreateRoleController : ControllerBase
     {
         private readonly IRole _role;
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
         public CreateRoleController(IRole role, IMapper mapper)
         {
             _role = role;
-            this.mapper = mapper;
+            _mapper = mapper;
         }
 
         // GET: api/CreateRole
@@ -79,7 +79,12 @@ namespace FreeFundsApi.Controllers
                     }
                     else
                     {
-                        var temprole = mapper.Map<Role>(roleViewModel);
+                        //var temprole = _mapper.Map<Role>(roleViewModel);
+                        var temprole = new Role
+                        {
+                            RoleName = roleViewModel.RoleName,
+                            Status = roleViewModel.Status
+                        };
 
                         _role.InsertRole(temprole);
 
@@ -115,7 +120,13 @@ namespace FreeFundsApi.Controllers
         {
             try
             {
-                var temprole = mapper.Map<Role>(roleViewModel);
+                //var temprole = _mapper.Map<Role>(roleViewModel);
+                var temprole = new Role
+                {
+                    RoleName = roleViewModel.RoleName,
+                    Status = roleViewModel.Status,
+                    RoleId = id
+                };
                 _role.UpdateRole(temprole);
 
                 var response = new HttpResponseMessage()

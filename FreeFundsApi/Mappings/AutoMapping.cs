@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using FreeFundsApi.Models;
+﻿using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
 
 namespace FreeFundsApi.Mappings
 {
-    public class MappingProfile : Profile
+    public class AutoMapping : AutoMapper.Profile
     {
-        public MappingProfile()
+        public AutoMapping()
         {
             CreateMap<SchemeMasterViewModel, SchemeMaster>()
                 .ForMember(dest => dest.SchemeName, opt => opt.MapFrom(src => src.SchemeName))

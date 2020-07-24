@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
 
@@ -6,13 +7,11 @@ namespace FreeFundsApi.Interface
 {
     public interface IAllGame
     {
-        bool InsertUsers(Users user);
-        bool CheckUsersExits(string username);
-        Users GetUsersbyId(int userid);
-        bool DeleteUsers(int userid);
-        bool UpdateUsers(Users role);
-        List<Users> GetAllUsers();
-        bool AuthenticateUsers(string username, string password);
-        LoginResponse GetUserDetailsbyCredentials(string username);
+        Task<bool> InsertGameAsync(AllGame allGame);
+        Task<bool> CheckExistGameAsync(string allGame);
+        Task<AllGameViewModel> GetGamebyIdAsync(long gameId);
+        Task<bool> DeleteGameAsync(long gameId);
+        Task<bool> UpdateGameAsync(AllGame allGame);
+        Task<IEnumerable<AllGameViewModel>> GetAllGamesAsync();
     }
 }

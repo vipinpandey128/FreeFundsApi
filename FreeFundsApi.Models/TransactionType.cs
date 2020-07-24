@@ -11,5 +11,7 @@ namespace FreeFundsApi.Models
         [MaxLength(50)]
         public string TransactionTypeName { get; set; }
         public bool IsActive { get; set; }
+        public virtual List<AllTransaction> AllTransactions { get; set; }
+
     }
 }

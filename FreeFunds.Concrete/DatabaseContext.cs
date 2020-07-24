@@ -1,5 +1,7 @@
 ﻿using FreeFundsApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -15,10 +17,10 @@ namespace FreeFundsApi.Concrete
         public DbSet<AllTransaction> AllTransactions { get; set; }
         public DbSet<AllGame> AllGames { get; set; }
         public DbSet<LoginStatus> LoginStatus { get; set; }
-        public DbSet<WithdrawalLimit> WithdrawalLimit { get; set; }
-        public DbSet<TransactionType> TransactionType { get; set; }
-        public DbSet<Winning> Winning { get; set; }
-        public DbSet<Bet> Bet { get; set; }
+        public DbSet<WithdrawalLimit> WithdrawalLimits { get; set; }
+        public DbSet<TransactionType> TransactionTypes { get; set; }
+        public DbSet<Winning> Winnings { get; set; }
+        public DbSet<Bet> Bets { get; set; }
         public DbSet<SchemeMaster> SchemeMaster { get; set; }
         public DbSet<PeriodTB> PeriodTb { get; set; }
         public DbSet<PlanMaster> PlanMaster { get; set; }
@@ -36,12 +38,35 @@ namespace FreeFundsApi.Concrete
             modelBuilder.Entity<AllTransaction>().ToTable("AllTransaction").HasKey(ee => ee.TransactionId);
             modelBuilder.Entity<AllTransaction>().Property(b => b.IsActive).HasDefaultValueSql("0");
             modelBuilder.Entity<AllTransaction>().Property(b => b.CurrentBal).HasDefaultValueSql("0");
-            modelBuilder.Entity<AllTransaction>()
-            .HasOne(p => p.Users)
-            .WithMany(b => b.AllTransactions).
-            HasForeignKey(p => p.UserId);
+            modelBuilder.Entity<AllTransaction>(entity =>
+            {
+                // Fluent API for column properties
 
-            modelBuilder.Entity<AllGame>().ToTable("AllGame").HasKey(ee => ee.GameId);
+                entity.HasOne(d => d.Users)
+                .WithMany(p => p.AllTransactions)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(d => d.Bets)
+                    .WithMany(p => p.AllTransactions)
+                    .HasForeignKey(d => d.BetId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(d => d.TransactionType)
+                    .WithMany(p => p.AllTransactions)
+                    .HasForeignKey(d => d.TransactionTypeId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            });
+
+            modelBuilder.Entity<AllGame>(entity =>
+            {
+                entity.ToTable("AllGame").HasKey(ee => ee.GameId);
+                entity.HasOne(p => p.SchemeMaster)
+                .WithMany(b => b.AllGames).
+                HasForeignKey(p => p.SchemeID);
+                entity.Property(ee => ee.CreatedDateTime).HasColumnType<DateTime>("datetime");
+            });
 
 
             modelBuilder.Entity<LoginStatus>().ToTable("LoginStatus").HasKey(ee => ee.LoginStatusId);
@@ -57,21 +82,38 @@ namespace FreeFundsApi.Concrete
             modelBuilder.Entity<TransactionType>().ToTable("TransactionType", "dbo").HasKey(ee => ee.TransationTypeId);
 
 
-            modelBuilder.Entity<Winning>().ToTable("Winning", "dbo").HasKey(ee => ee.WinId);
-            modelBuilder.Entity<Winning>()
-            .HasOne(p => p.Users)
+
+            modelBuilder.Entity<Winning>(entity =>
+            {
+                entity.ToTable("Winning", "dbo").HasKey(ee => ee.WinId);
+                entity.HasOne(p => p.Users)
             .WithMany(b => b.Winnings).
             HasForeignKey(p => p.UserId);
+            });
+
 
 
             modelBuilder.Entity<Bet>().ToTable("Bet", "dbo").HasKey(ee => ee.BetId);
-            modelBuilder.Entity<Bet>()
-            .HasOne(p => p.Users)
-            .WithMany(b => b.Bets).
-            HasForeignKey(p => p.UserId);
+
+            modelBuilder.Entity<Bet>(entity =>
+            {
+                entity.HasOne(d => d.AllGame)
+                .WithMany(p => p.Bets)
+                .HasForeignKey(d => d.GameId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(d => d.Users)
+               .WithMany(p => p.Bets)
+               .HasForeignKey(d => d.UserId)
+               .OnDelete(DeleteBehavior.NoAction);
+            });
 
 
-            modelBuilder.Entity<SchemeMaster>().ToTable("SchemeMaster", "dbo").HasKey(ee => ee.SchemeID);
+            modelBuilder.Entity<SchemeMaster>(entity =>
+            {
+                entity.ToTable("SchemeMaster").HasKey(ee => ee.SchemeID);
+
+            });
 
 
             modelBuilder.Entity<PeriodTB>().ToTable("PeriodTB", "dbo").HasKey(ee => ee.PeriodID);
@@ -86,24 +128,34 @@ namespace FreeFundsApi.Concrete
             modelBuilder.Entity<MemberRegistration>().ToTable("MemberRegistration", "dbo").HasKey(ee => ee.MemberId);
 
 
-            modelBuilder.Entity<Users>().ToTable("Users", "dbo").HasKey(ee => ee.UserId);
-            modelBuilder.Entity<Users>().Property(b => b.CurrentBal).HasDefaultValueSql("0");
-            modelBuilder.Entity<Users>().Property(b => b.IsTermsAndConditions).HasDefaultValueSql("0");
-            modelBuilder.Entity<Users>().Property(b => b.IsPasswordUpdated).HasDefaultValueSql("0");
-            modelBuilder.Entity<Users>().Property(b => b.Status).HasDefaultValueSql("0");
-
-            modelBuilder.Entity<AllGame>().ToTable("AllGame").HasKey(ee => ee.GameId);
-
-
-
-            modelBuilder.Entity<UsersInRoles>().ToTable("UsersInRoles", "dbo").HasKey(ee => ee.UserRolesId);
-            modelBuilder.Entity<UsersInRoles>()
-            .HasOne(p => p.Users)
-            .WithMany(b => b.UsersInRoles).
-            HasForeignKey(p => p.UserId);
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.ToTable("Users", "dbo").HasKey(ee => ee.UserId);
+                entity.Property(b => b.CurrentBal).HasDefaultValueSql("0");
+                entity.Property(b => b.IsTermsAndConditions).HasDefaultValueSql("0");
+                entity.Property(b => b.IsPasswordUpdated).HasDefaultValueSql("0");
+                entity.Property(b => b.Status).HasDefaultValueSql("1");
+            });
+            
 
 
-            modelBuilder.Entity<PaymentDetails>().ToTable("PaymentDetails", "dbo").HasKey(ee => ee.PaymentID);
+
+
+            modelBuilder.Entity<UsersInRoles>(entity =>
+            {
+                entity.ToTable("UsersInRoles", "dbo").HasKey(ee => ee.UserRolesId);
+                entity.HasOne(p => p.Users)
+                .WithMany(b => b.UsersInRoles).
+                HasForeignKey(p => p.UserId);
+            });
+
+            modelBuilder.Entity<PaymentDetails>(entity =>
+            {
+                entity.ToTable("PaymentDetails", "dbo").HasKey(ee => ee.PaymentID);
+            });
         }
+        
     }
+    
+
 }

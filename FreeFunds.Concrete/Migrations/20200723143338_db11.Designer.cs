@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FreeFundsApi.Concrete.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200715063058_db1")]
-    partial class db1
+    [Migration("20200723143338_db11")]
+    partial class db11
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,8 +31,8 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime");
 
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
@@ -43,16 +43,15 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SchemeId")
+                    b.Property<int>("SchemeID")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
                     b.HasKey("GameId");
+
+                    b.HasIndex("SchemeID");
 
                     b.ToTable("AllGame");
                 });
@@ -67,7 +66,7 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<decimal>("BetAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<long>("BetId")
+                    b.Property<long?>("BetId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("CreatedBy")
@@ -89,13 +88,17 @@ namespace FreeFundsApi.Concrete.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValueSql("0");
 
-                    b.Property<int>("TransactionTypeId")
+                    b.Property<int?>("TransactionTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("TransactionId");
+
+                    b.HasIndex("BetId");
+
+                    b.HasIndex("TransactionTypeId");
 
                     b.HasIndex("UserId");
 
@@ -121,8 +124,8 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SchemeID")
-                        .HasColumnType("int");
+                    b.Property<long>("GameId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -130,7 +133,12 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("WinPer")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("BetId");
+
+                    b.HasIndex("GameId");
 
                     b.HasIndex("UserId");
 
@@ -397,9 +405,12 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("WinPer")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("SchemeID");
 
-                    b.ToTable("SchemeMaster","dbo");
+                    b.ToTable("SchemeMaster");
                 });
 
             modelBuilder.Entity("FreeFundsApi.Models.TransactionType", b =>
@@ -464,7 +475,7 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<bool>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValueSql("0");
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
@@ -544,21 +555,45 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.ToTable("WithdrawalLimit","dbo");
                 });
 
-            modelBuilder.Entity("FreeFundsApi.Models.AllTransaction", b =>
+            modelBuilder.Entity("FreeFundsApi.Models.AllGame", b =>
                 {
-                    b.HasOne("FreeFundsApi.Models.Users", "Users")
-                        .WithMany("AllTransactions")
-                        .HasForeignKey("UserId")
+                    b.HasOne("FreeFundsApi.Models.SchemeMaster", "SchemeMaster")
+                        .WithMany("AllGames")
+                        .HasForeignKey("SchemeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FreeFundsApi.Models.AllTransaction", b =>
+                {
+                    b.HasOne("FreeFundsApi.Models.Bet", "Bets")
+                        .WithMany("AllTransactions")
+                        .HasForeignKey("BetId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("FreeFundsApi.Models.TransactionType", "TransactionType")
+                        .WithMany("AllTransactions")
+                        .HasForeignKey("TransactionTypeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("FreeFundsApi.Models.Users", "Users")
+                        .WithMany("AllTransactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+                });
+
             modelBuilder.Entity("FreeFundsApi.Models.Bet", b =>
                 {
+                    b.HasOne("FreeFundsApi.Models.AllGame", "AllGame")
+                        .WithMany("Bets")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("FreeFundsApi.Models.Users", "Users")
                         .WithMany("Bets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 

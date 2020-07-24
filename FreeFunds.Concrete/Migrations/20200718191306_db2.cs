@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FreeFundsApi.Concrete.Migrations
 {
-    public partial class db1 : Migration
+    public partial class db2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -216,34 +216,6 @@ namespace FreeFundsApi.Concrete.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AllTransaction",
-                columns: table => new
-                {
-                    TransactionId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionTypeId = table.Column<int>(nullable: false),
-                    BetId = table.Column<long>(nullable: false),
-                    BetAmount = table.Column<decimal>(nullable: false),
-                    CurrentBal = table.Column<decimal>(nullable: false, defaultValueSql: "0"),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    IsActive = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    IpAddress = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AllTransaction", x => x.TransactionId);
-                    table.ForeignKey(
-                        name: "FK_AllTransaction_Users_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dbo",
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LoginStatus",
                 columns: table => new
                 {
@@ -340,6 +312,44 @@ namespace FreeFundsApi.Concrete.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AllTransaction",
+                columns: table => new
+                {
+                    TransactionId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TransactionTypeId = table.Column<int>(nullable: false),
+                    BetAmount = table.Column<decimal>(nullable: false),
+                    CurrentBal = table.Column<decimal>(nullable: false, defaultValueSql: "0"),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false, defaultValueSql: "0"),
+                    IpAddress = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: true),
+                    BetId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AllTransaction", x => x.TransactionId);
+                    table.ForeignKey(
+                        name: "FK_AllTransaction_Bet_BetId",
+                        column: x => x.BetId,
+                        principalSchema: "dbo",
+                        principalTable: "Bet",
+                        principalColumn: "BetId");
+                    table.ForeignKey(
+                        name: "FK_AllTransaction_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dbo",
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AllTransaction_BetId",
+                table: "AllTransaction",
+                column: "BetId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AllTransaction_UserId",
                 table: "AllTransaction",
@@ -381,10 +391,6 @@ namespace FreeFundsApi.Concrete.Migrations
                 name: "LoginStatus");
 
             migrationBuilder.DropTable(
-                name: "Bet",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
                 name: "MemberRegistration",
                 schema: "dbo");
 
@@ -422,6 +428,10 @@ namespace FreeFundsApi.Concrete.Migrations
 
             migrationBuilder.DropTable(
                 name: "WithdrawalLimit",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Bet",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

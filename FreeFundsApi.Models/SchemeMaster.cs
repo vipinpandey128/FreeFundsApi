@@ -9,11 +9,12 @@ namespace FreeFundsApi.Models
 {
     public class SchemeMaster
     {
-       
         public int SchemeID { get; set; }
         public string SchemeName { get; set; }
+        public decimal WinPer { get; set; }
         public int Createdby { get; set; }
         public DateTime Createddate { get; set; }
-        public bool Status { get; set; }      
+        public bool Status { get; set; }
+        public virtual List<AllGame> AllGames { get; set; }
     }
 }

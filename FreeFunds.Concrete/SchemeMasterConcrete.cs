@@ -48,8 +48,6 @@ namespace FreeFundsApi.Concrete
 
         public bool AddSchemeMaster(SchemeMaster schemeMaster)
         {
-            //var connectionString = _configuration.GetConnectionString("DatabaseConnection");
-
             _context.SchemeMaster.Add(schemeMaster);
             var result = _context.SaveChanges();
             if (result > 0)
@@ -65,6 +63,7 @@ namespace FreeFundsApi.Concrete
         public bool UpdateSchemeMaster(SchemeMaster schemeMaster)
         {
             _context.Entry(schemeMaster).Property(x => x.Status).IsModified = true;
+            _context.Entry(schemeMaster).Property(x => x.SchemeName).IsModified = true;
             var result = _context.SaveChanges();
             if (result > 0)
             {
