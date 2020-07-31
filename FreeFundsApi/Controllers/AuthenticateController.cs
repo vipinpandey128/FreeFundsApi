@@ -13,6 +13,8 @@ using FreeFundsApi.Common;
 using FreeFundsApi.Interface;
 using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
+using NWebsec.AspNetCore.Core.Web;
+using System.Net.Http;
 
 namespace FreeFundsApi.Controllers
 {
@@ -23,28 +25,39 @@ namespace FreeFundsApi.Controllers
     {
         private readonly AppSettings _appSettings;
         private readonly IUsers _users;
-        public AuthenticateController(IOptions<AppSettings> appSettings, IUsers users)
+        private readonly ILoginStatus _loginService;
+
+        public AuthenticateController(IOptions<AppSettings> appSettings, IUsers users, ILoginStatus loginService)
         {
             _users = users;
             _appSettings = appSettings.Value;
+            _loginService = loginService;
         }
 
         // POST: api/Authenticate
         [HttpPost]
-        public IActionResult Post([FromBody] LoginRequestViewModel value)
+        public async Task<IActionResult> Post([FromBody] LoginRequestViewModel value)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var loginstatus = _users.AuthenticateUsers(value.UserName, EncryptionLibrary.EncryptText(value.Password));
+                    var loginstatus = await _users.AuthenticateUsersAsync(value.UserName, EncryptionLibrary.EncryptText(value.Password));
 
                     if (loginstatus)
                     {
-                        var userdetails = _users.GetUserDetailsbyCredentials(value.UserName);
+                        var userdetails = await _users.GetUserDetailsbyCredentialsAsync(value.UserName);
 
                         if (userdetails != null)
                         {
+
+                           await _loginService.InsertLoginStatusAsync(new LoginStatus
+                            {
+                                IpAddress = value.IpAddress,
+                                IsActive = true,
+                                LastLogin = DateTime.Now,
+                                UserId = userdetails.UserId
+                            });
 
                             var tokenHandler = new JwtSecurityTokenHandler();
                             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);

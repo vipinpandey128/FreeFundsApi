@@ -66,8 +66,7 @@ namespace FreeFundsApi.Concrete
                           {
                               GameId = game.GameId,
                               GameName = game.GameName,
-                              SchemeName = sch.SchemeName
-                          ,
+                              SchemeName = sch.SchemeName,
                               IsActive = game.IsActive,
                               WinPer = sch.WinPer,
                               StartTime = game.StartTime,

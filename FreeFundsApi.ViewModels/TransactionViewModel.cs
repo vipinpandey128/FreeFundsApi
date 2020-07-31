@@ -1,9 +1,10 @@
-﻿
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace FreeFundsApi.Models
+namespace FreeFundsApi.ViewModels
 {
-    public class AllTransaction
+    public class TransactionViewModel
     {
         public long TransactionId { get; set; }
         public int TransactionTypeId { get; set; }
@@ -15,8 +16,5 @@ namespace FreeFundsApi.Models
         public string IpAddress { get; set; }
         public long RecordId { get; set; }
         public int UserId { get; set; }
-        public virtual Users Users { get; set; }
-        public virtual TransactionType TransactionType { get; set; }
-
     }
 }

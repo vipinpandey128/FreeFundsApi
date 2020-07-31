@@ -1,0 +1,57 @@
+
+7/31/2020 9:57:06 AM
+------------------------------------------------------------------------------------------------
+Controller Name :- AgentUser
+Action Method Name :- Post
+------------------------------------------------------------------------------------------------
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker+ExceptionContextSealed
+Message ---
+{0}Operator '++' cannot be applied to operand of type 'string'
+Source ---
+{0}Anonymously Hosted DynamicMethods Assembly
+StackTrace ---
+{0}   at CallSite.Target(Closure , CallSite , Object )
+   at System.Dynamic.UpdateDelegates.UpdateAndExecute1[T0,TRet](CallSite site, T0 arg0)
+   at FreeFundsApi.Concrete.AgentUserConcrete.InsertUsersAsync(Users user) in D:\Lottery\FreeFundsApi\FreeFunds.Concrete\AgentUserConcrete.cs:line 152
+   at FreeFundsApi.Concrete.AgentUserConcrete.InsertUsersAsync(Users user) in D:\Lottery\FreeFundsApi\FreeFunds.Concrete\AgentUserConcrete.cs:line 171
+   at FreeFundsApi.Controllers.AgentUserController.Post(UsersViewModel users) in D:\Lottery\FreeFundsApi\FreeFundsApi\Controllers\AgentUserController.cs:line 80
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+TargetSite ---
+{0}System.Object CallSite.Target(System.Runtime.CompilerServices.Closure, System.Runtime.CompilerServices.CallSite, System.Object)
+
+
+7/31/2020 9:57:54 AM
+------------------------------------------------------------------------------------------------
+Controller Name :- AgentUser
+Action Method Name :- Post
+------------------------------------------------------------------------------------------------
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker+ExceptionContextSealed
+Message ---
+{0}Operator '++' cannot be applied to operand of type 'string'
+Source ---
+{0}Anonymously Hosted DynamicMethods Assembly
+StackTrace ---
+{0}   at CallSite.Target(Closure , CallSite , Object )
+   at FreeFundsApi.Concrete.AgentUserConcrete.InsertUsersAsync(Users user) in D:\Lottery\FreeFundsApi\FreeFunds.Concrete\AgentUserConcrete.cs:line 152
+   at FreeFundsApi.Concrete.AgentUserConcrete.InsertUsersAsync(Users user) in D:\Lottery\FreeFundsApi\FreeFunds.Concrete\AgentUserConcrete.cs:line 171
+   at FreeFundsApi.Controllers.AgentUserController.Post(UsersViewModel users) in D:\Lottery\FreeFundsApi\FreeFundsApi\Controllers\AgentUserController.cs:line 80
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+TargetSite ---
+{0}System.Object CallSite.Target(System.Runtime.CompilerServices.Closure, System.Runtime.CompilerServices.CallSite, System.Object)
+

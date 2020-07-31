@@ -16,6 +16,6 @@ namespace FreeFundsApi.Models
         public virtual Users Users { get; set; }
         public long GameId { get; set; }
         public virtual AllGame AllGame { get; set; }
-        public virtual List<AllTransaction> AllTransactions { get; set; }
+        public virtual AllTransaction AllTransactions { get; set; }
     }
 }

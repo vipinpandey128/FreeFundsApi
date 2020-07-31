@@ -23,9 +23,10 @@ namespace FreeFundsApi.Concrete
             throw new NotImplementedException();
         }
 
-        public Task<bool> InsertLoginStatusAsync(LoginStatus LoginStatus)
+        public async Task<bool> InsertLoginStatusAsync(LoginStatus LoginStatus)
         {
-            throw new NotImplementedException();
+            await context.LoginStatus.AddAsync(LoginStatus);
+            return Convert.ToBoolean(await context.SaveChangesAsync());
         }
 
     }

@@ -14,6 +14,7 @@ namespace FreeFundsApi.Concrete
 
         }
 
+        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
         public DbSet<AllTransaction> AllTransactions { get; set; }
         public DbSet<AllGame> AllGames { get; set; }
         public DbSet<LoginStatus> LoginStatus { get; set; }
@@ -35,9 +36,7 @@ namespace FreeFundsApi.Concrete
             //Write Fluent API configurations here
 
             //Map entity to table
-            modelBuilder.Entity<AllTransaction>().ToTable("AllTransaction").HasKey(ee => ee.TransactionId);
-            modelBuilder.Entity<AllTransaction>().Property(b => b.IsActive).HasDefaultValueSql("0");
-            modelBuilder.Entity<AllTransaction>().Property(b => b.CurrentBal).HasDefaultValueSql("0");
+           
             modelBuilder.Entity<AllTransaction>(entity =>
             {
                 // Fluent API for column properties
@@ -47,16 +46,23 @@ namespace FreeFundsApi.Concrete
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-                entity.HasOne(d => d.Bets)
-                    .WithMany(p => p.AllTransactions)
-                    .HasForeignKey(d => d.BetId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
+                
                 entity.HasOne(d => d.TransactionType)
                     .WithMany(p => p.AllTransactions)
                     .HasForeignKey(d => d.TransactionTypeId)
                     .OnDelete(DeleteBehavior.NoAction);
+                entity.Property(b => b.IsActive).HasDefaultValueSql("0");
+                entity.ToTable("AllTransaction").HasKey(ee => ee.TransactionId);
+                entity.Property(b => b.CurrentBal).HasDefaultValueSql("0");
+                entity.Property(ee => ee.CreatedDate).HasColumnType<DateTime>("datetime");
+                entity.Property(b => b.IpAddress).HasMaxLength(25);
 
+            });
+
+            modelBuilder.Entity<PaymentTransaction>(entity =>
+            {
+                entity.ToTable("PaymentTransaction").HasKey(ee => ee.Id);
+                entity.Property(ee => ee.CreatedDate).HasColumnType<DateTime>("datetime");
             });
 
             modelBuilder.Entity<AllGame>(entity =>
@@ -69,11 +75,16 @@ namespace FreeFundsApi.Concrete
             });
 
 
-            modelBuilder.Entity<LoginStatus>().ToTable("LoginStatus").HasKey(ee => ee.LoginStatusId);
-            modelBuilder.Entity<LoginStatus>()
-            .HasOne(p => p.Users)
-            .WithMany(b => b.LoginStatus).
-            HasForeignKey(p => p.UserId);
+            modelBuilder.Entity<LoginStatus>(entity =>
+            {
+                entity.ToTable("LoginStatus").HasKey(ee => ee.LoginStatusId);
+                modelBuilder.Entity<LoginStatus>()
+                .HasOne(p => p.Users)
+                .WithMany(b => b.LoginStatus).
+                HasForeignKey(p => p.UserId);
+                entity.Property(ee => ee.LastLogin).HasColumnType<DateTime>("datetime");
+            });
+                
 
 
             modelBuilder.Entity<WithdrawalLimit>().ToTable("WithdrawalLimit", "dbo").HasKey(ee => ee.Id);
@@ -135,6 +146,11 @@ namespace FreeFundsApi.Concrete
                 entity.Property(b => b.IsTermsAndConditions).HasDefaultValueSql("0");
                 entity.Property(b => b.IsPasswordUpdated).HasDefaultValueSql("0");
                 entity.Property(b => b.Status).HasDefaultValueSql("1");
+                entity.Property(b => b.FullName).HasMaxLength(20);
+                entity.Property(b => b.Contactno).HasMaxLength(15);
+                entity.Property(b => b.EmailId).HasMaxLength(25);
+                entity.Property(b => b.UserName).HasMaxLength(10);
+                entity.Property(b => b.CreatedDate).HasColumnType<DateTime>("datetime");
             });
             
 

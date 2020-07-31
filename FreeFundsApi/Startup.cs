@@ -98,6 +98,7 @@ namespace FreeFundsApi
             services.AddTransient<IWinning, WinningConcrete>();
             services.AddTransient<IWithdrawalLimit, WithdrawalLimitConcrete>();
             services.AddTransient<ILoginStatus, LoginStatusConcrete>();
+            services.AddTransient<IAgent, AgentUserConcrete>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper>(implementationFactory =>
             {

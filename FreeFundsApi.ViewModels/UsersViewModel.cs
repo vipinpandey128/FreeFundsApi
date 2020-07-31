@@ -16,11 +16,10 @@ namespace FreeFundsApi.ViewModels
         [Required]
         public string FullName { get; set; }
         [Required]
-        public string EmailId { get; set; }
-        [Required]
         public string Contactno { get; set; }
         [Required]
         public string Password { get; set; }
+        public decimal CurrentBal { get; set; }
         public bool Status { get; set; }
     }
 }
