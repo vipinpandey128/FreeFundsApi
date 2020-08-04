@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FreeFundsApi.Interface;
 using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace FreeFundsApi.Concrete
 {
@@ -18,20 +19,53 @@ namespace FreeFundsApi.Concrete
             _context = context;
         }
 
-        public bool CheckUsersExits(string username)
+        public async Task<bool> CheckUsersExitsAsync(string username)
         {
-            var result = (from user in _context.Users
+            var result = await (from user in _context.Users
                           where user.UserName == username
-                          select user).Count();
+                          select user).CountAsync();
 
             return result > 0 ? true : false;
         }
 
-        public bool AuthenticateUsers(string username, string password)
+        public async Task<UsersViewModel> GetUserDetailsByFilterTypeAsync(string searchData, int filterType)
         {
-            var result = (from user in _context.Users
+            var userDM = _context.Users;
+            if(filterType==1)
+            {
+                return await (from user in userDM
+                              where user.Contactno == searchData
+                              select new UsersViewModel
+                              {
+                                  Contactno = user.Contactno,
+                                  CurrentBal = user.CurrentBal,
+                                  FullName = user.FullName,
+                                  Id = user.UserId,
+                                  Password = "",
+                                  Status = user.Status,
+                                  UserName = user.UserName
+                              }).FirstOrDefaultAsync();
+            }
+
+            return await (from user in userDM
+                          where user.UserName == searchData
+                          select new UsersViewModel
+                          {
+                              Contactno = user.Contactno,
+                              CurrentBal = user.CurrentBal,
+                              FullName = user.FullName,
+                              Id = user.UserId,
+                              Password = "",
+                              Status = user.Status,
+                              UserName = user.UserName
+                          }).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> AuthenticateUsersAsync(string username, string password)
+        {
+            var result = await (from user in _context.Users
                           where user.UserName == username && user.Password == password
-                          select user).Count();
+                          select user).CountAsync();
 
 
 
@@ -40,11 +74,11 @@ namespace FreeFundsApi.Concrete
 
         }
 
-        public LoginResponse GetUserDetailsbyCredentials(string username)
+        public async Task<LoginResponse> GetUserDetailsbyCredentialsAsync(string username)
         {
             try
             {
-                var result = (from user in _context.Users
+                var result = await (from user in _context.Users
                     join userinrole in _context.UsersInRoles on user.UserId equals userinrole.UserId
                               where user.UserName == username 
 
@@ -54,7 +88,7 @@ namespace FreeFundsApi.Concrete
                                   RoleId = userinrole.RoleId,
                                   Status = user.Status,
                                   UserName = user.UserName
-                              }).SingleOrDefault();
+                              }).SingleOrDefaultAsync();
 
                 return result;
             }
@@ -65,15 +99,15 @@ namespace FreeFundsApi.Concrete
         }
 
 
-        public bool DeleteUsers(int userId)
+        public async Task<bool> DeleteUsersAsync(int userId)
         {
-            var removeuser = (from user in _context.Users
+            var removeuser = await (from user in _context.Users
                               where user.UserId == userId
-                              select user).FirstOrDefault();
+                              select user).FirstOrDefaultAsync();
             if (removeuser != null)
             {
                 _context.Users.Remove(removeuser);
-                var result = _context.SaveChanges();
+                var result = await _context.SaveChangesAsync();
 
                 if (result > 0)
                 {
@@ -90,28 +124,28 @@ namespace FreeFundsApi.Concrete
             }
         }
 
-        public List<Users> GetAllUsers()
+        public async Task<List<Users>> GetAllUsersAsync()
         {
-            var result = (from user in _context.Users
+            var result = await (from user in _context.Users
                           where user.Status == true
-                          select user).ToList();
+                          select user).ToListAsync();
 
             return result;
         }
 
-        public Users GetUsersbyId(int userId)
+        public async Task<Users> GetUsersbyIdAsync(int userId)
         {
-            var result = (from user in _context.Users
+            var result = await (from user in _context.Users
                           where user.UserId == userId
-                          select user).FirstOrDefault();
+                          select user).FirstOrDefaultAsync();
 
             return result;
         }
 
-        public bool InsertUsers(Users user)
+        public async Task<bool> InsertUsersAsync(Users user)
         {
             _context.Users.Add(user);
-            var result = _context.SaveChanges();
+            var result = await _context.SaveChangesAsync();
             if (result > 0)
             {
                 return true;
@@ -122,7 +156,7 @@ namespace FreeFundsApi.Concrete
             }
         }
 
-        public bool UpdateUsers(Users user)
+        public async Task<bool> UpdateUsersAsync(Users user)
         {
             _context.Entry(user).Property(x => x.EmailId).IsModified = true;
             _context.Entry(user).Property(x => x.Contactno).IsModified = true;
@@ -130,7 +164,7 @@ namespace FreeFundsApi.Concrete
             _context.Entry(user).Property(x => x.FullName).IsModified = true;
             _context.Entry(user).Property(x => x.Password).IsModified = true;
 
-            var result = _context.SaveChanges();
+            var result = await _context.SaveChangesAsync();
             if (result > 0)
             {
                 return true;
@@ -140,5 +174,16 @@ namespace FreeFundsApi.Concrete
                 return false;
             }
         }
+
+        public async Task<bool> ValidateUserByPin(int userid, int pin)
+        {
+            return await _context.Users.Where(ee => ee.UserId == userid && ee.WithDrawalPin == pin).AnyAsync();
+        }
+
+        public async Task<decimal> CheckUserBalanceAsync(int userid)
+        {
+            return await _context.Users.Where(user => user.UserId == userid).Select(user => user.CurrentBal).FirstOrDefaultAsync();
+        }
+
     }
 }

@@ -5,14 +5,14 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using FreeFundsApi.Common;
 using FreeFundsApi.Interface;
 using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FreeFundsApi.Controllers
 {
@@ -20,38 +20,49 @@ namespace FreeFundsApi.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class AgentUserController : ControllerBase
     {
-        private readonly IUsers _users;
+        private readonly IAgent _users;
         private readonly IMapper mapper;
-        public UserController(IUsers users, IMapper mapper)
+        public AgentUserController(IAgent users, IMapper mapper)
         {
             _users = users;
             this.mapper = mapper;
         }
+
         // GET: api/User
         [HttpGet]
         public async Task<IEnumerable<Users>> Get()
         {
-            return await _users.GetAllUsersAsync();
+            var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+            return await _users.GetAllUsersAsync(userId);
         }
 
         // GET: api/User/5
-        [HttpGet("{id}", Name = "GetUsers")]
+        [HttpGet("{id}", Name = "GetAgentUsers")]
         public async Task<Users> Get(int id)
         {
-            return await _users.GetUsersbyIdAsync(id);
+            var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+            return await _users.GetUsersbyIdAsync(id, userId);
         }
 
-        // GET: api/User/searchData/filterType
-        [HttpGet("{searchData}/{filterType}", Name = "FilterUser")]
-        public async Task<UsersViewModel> GetUserDetails([FromRoute] string searchData, [FromRoute] int filterType)
+        [HttpGet]
+        [Route("getAgentBal")]
+        public async Task<decimal> GetAgentBal()
         {
-            return await _users.GetUserDetailsByFilterTypeAsync(searchData, filterType);
+            var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+            return await _users.CheckAgentBalanceAsync(userId);
         }
-         
 
-        // POST: api/User
+        // GET: api/AgentUser/searchData/filterType
+        [HttpGet("{searchData}/{filterType}", Name = "FilterAgentUser")]
+        public async Task<UsersViewModel> GetAgentUserDetails([FromRoute] string searchData, [FromRoute] int filterType)
+        {
+            var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+            return await _users.GetAgentUserDetailsByFilterTypeAsync(searchData, filterType, userId);
+        }
+
+        // POST: api/AgentUser
         [HttpPost]
         public async Task<HttpResponseMessage> Post([FromBody] UsersViewModel users)
         {
@@ -73,6 +84,7 @@ namespace FreeFundsApi.Controllers
                     tempUsers.CreatedDate = DateTime.Now;
                     tempUsers.Createdby = Convert.ToInt32(userId);
                     tempUsers.Password = EncryptionLibrary.EncryptText(users.Password);
+                    tempUsers.Status = true;
                     await _users.InsertUsersAsync(tempUsers);
 
                     var response = new HttpResponseMessage()
@@ -96,7 +108,7 @@ namespace FreeFundsApi.Controllers
 
         }
 
-        // PUT: api/User/5
+        // PUT: api/AgentUser/5
         [HttpPut("{id}")]
         public async Task<HttpResponseMessage> Put(int id, [FromBody] UsersViewModel users)
         {
@@ -131,7 +143,8 @@ namespace FreeFundsApi.Controllers
         [HttpDelete("{id}")]
         public async Task<HttpResponseMessage> Delete(int id)
         {
-            var result = await _users.DeleteUsersAsync(id);
+            var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+            var result = await _users.DeleteUsersAsync(id, userId);
 
             if (result)
             {

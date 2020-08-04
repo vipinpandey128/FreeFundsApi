@@ -1,30 +1,48 @@
-﻿using AutoMapper;
-using FreeFundsApi.Models;
+﻿using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
 
 namespace FreeFundsApi.Mappings
 {
-    public class MappingProfile : Profile
+    public class AutoMapping : AutoMapper.Profile
     {
-        public MappingProfile()
+        public AutoMapping()
         {
+            CreateMap<UsersProfileViewModel, Users>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.EmailId, opt => opt.MapFrom(src => src.EmailId))
+                .ForMember(dest => dest.Contactno, opt => opt.MapFrom(src => src.Contactno))
+                .ForMember(dest => dest.WithDrawalPin, opt => opt.MapFrom(src => src.WithDrawalPin))
+                .ForMember(dest => dest.CurrentBal, opt => opt.MapFrom(src => src.CurrentBal))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
+            CreateMap<Users, UsersProfileViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.EmailId, opt => opt.MapFrom(src => src.EmailId))
+                .ForMember(dest => dest.Contactno, opt => opt.MapFrom(src => src.Contactno))
+                .ForMember(dest => dest.WithDrawalPin, opt => opt.MapFrom(src => src.WithDrawalPin))
+                .ForMember(dest => dest.CurrentBal, opt => opt.MapFrom(src => src.CurrentBal))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
             CreateMap<SchemeMasterViewModel, SchemeMaster>()
                 .ForMember(dest => dest.SchemeName, opt => opt.MapFrom(src => src.SchemeName))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
+            CreateMap<TransactionViewModel, AllTransaction>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.TransactionAmount, opt => opt.MapFrom(src => src.TransactionAmount))
+                .ForMember(dest => dest.IpAddress, opt => opt.MapFrom(src => src.IpAddress))
+                .ForMember(dest => dest.pin, opt => opt.MapFrom(src => src.pin))
+                .ForMember(dest => dest.TransactionTypeId, opt => opt.MapFrom(src => src.TransactionTypeId));
 
             CreateMap<SchemeMasterEditViewModel, SchemeMaster>()
                 .ForMember(dest => dest.SchemeName, opt => opt.MapFrom(src => src.SchemeName))
                 .ForMember(dest => dest.SchemeID, opt => opt.MapFrom(src => src.SchemeID))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
 
-            CreateMap<PlanMasterViewModel, PlanMaster>()
-                .ForMember(dest => dest.PlanID, opt => opt.MapFrom(src => src.PlanID))
-                .ForMember(dest => dest.SchemeID, opt => opt.MapFrom(src => src.SchemeID))
-                .ForMember(dest => dest.PeriodID, opt => opt.MapFrom(src => src.PeriodID))
-                .ForMember(dest => dest.PlanName, opt => opt.MapFrom(src => src.PlanName))
-                .ForMember(dest => dest.PlanAmount, opt => opt.MapFrom(src => src.PlanAmount))
-                .ForMember(dest => dest.ServiceTax, opt => opt.MapFrom(src => src.ServiceTax))
-                .ForMember(dest => dest.RecStatus, opt => opt.MapFrom(src => src.RecStatus));
 
             CreateMap<Role, RoleViewModel>()
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.RoleName))
@@ -52,7 +70,6 @@ namespace FreeFundsApi.Mappings
             CreateMap<UsersViewModel, Users>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Contactno, opt => opt.MapFrom(src => src.Contactno))
-                .ForMember(dest => dest.EmailId, opt => opt.MapFrom(src => src.EmailId))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id))

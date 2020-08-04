@@ -16,6 +16,9 @@ namespace FreeFundsApi.ViewModels
         public string Password { get; set; }
         public string Token { get; set; }
         public int Usertype { get; set; }
+        public string IpAddress { get; set; }
+
+    
     }
 
 

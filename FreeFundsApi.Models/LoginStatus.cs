@@ -12,6 +12,7 @@ namespace FreeFundsApi.Models
         public DateTime LastLogin { get; set; }
         public bool IsActive { get; set; } = true;
         public int UserId { get; set; }
+        public string IpAddress { get; set; }
         public virtual Users Users { get; set; }
     }
 }

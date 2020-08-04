@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FreeFundsApi.Models;
 using FreeFundsApi.ViewModels;
 
@@ -6,13 +7,16 @@ namespace FreeFundsApi.Interface
 {
     public interface IUsers
     {
-        bool InsertUsers(Users user);
-        bool CheckUsersExits(string username);
-        Users GetUsersbyId(int userid);
-        bool DeleteUsers(int userid);
-        bool UpdateUsers(Users role);
-        List<Users> GetAllUsers();
-        bool AuthenticateUsers(string username, string password);
-        LoginResponse GetUserDetailsbyCredentials(string username);
+        Task<bool> InsertUsersAsync(Users user);
+        Task<bool> CheckUsersExitsAsync(string username);
+        Task<Users> GetUsersbyIdAsync(int userid);
+        Task<bool> DeleteUsersAsync(int userid);
+        Task<bool> UpdateUsersAsync(Users role);
+        Task<List<Users>> GetAllUsersAsync();
+        Task<bool> AuthenticateUsersAsync(string username, string password);
+        Task<LoginResponse> GetUserDetailsbyCredentialsAsync(string username);
+        Task<UsersViewModel> GetUserDetailsByFilterTypeAsync(string searchData, int filterType);
+        Task<decimal> CheckUserBalanceAsync(int userid);
+        Task<bool> ValidateUserByPin(int userid, int pin);
     }
 }

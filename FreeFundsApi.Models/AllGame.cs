@@ -10,12 +10,13 @@ namespace FreeFundsApi.Models
     {
         public long GameId { get; set; }
         public string GameName { get; set; }
-        public int SchemeId { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+        public DateTime CreatedDateTime { get; set; }
         public int CreatedBy { get; set; }
         public bool IsActive { get; set; }
+        public virtual List<Bet> Bets { get; set; }
+        public int SchemeID { get; set; }
+        public virtual SchemeMaster SchemeMaster { get; set; }
     }
 }

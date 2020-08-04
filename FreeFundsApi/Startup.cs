@@ -80,16 +80,23 @@ namespace FreeFundsApi
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<ISchemeMaster, SchemeMasterConcrete>();
-            services.AddTransient<IPlanMaster, PlanMasterConcrete>();
-            services.AddTransient<IPeriodMaster, PeriodMasterConcrete>();
             services.AddTransient<IRole, RoleConcrete>();
-            services.AddTransient<IMemberRegistration, MemberRegistrationConcrete>();
             services.AddTransient<IUsers, UsersConcrete>();
             services.AddTransient<IUsersInRoles, UsersInRolesConcrete>();
-            services.AddTransient<IPaymentDetails, PaymentDetailsConcrete>();
             services.AddTransient<IRenewal, RenewalConcrete>();
             services.AddTransient<IReports, ReportsMaster>();
             services.AddTransient<IGenerateRecepit, GenerateRecepitConcrete>();
+            services.AddTransient<IGenerateRecepit, GenerateRecepitConcrete>();
+            services.AddTransient<IAllGame, AllGameConcrete>();
+            services.AddTransient<IAllTransaction, AllTransactionConcrete>();
+            services.AddTransient<ITransactionType, TransactionTypeConcrete>();
+            services.AddTransient<IBet, BetsConcrete>();
+            services.AddTransient<IWinning, WinningConcrete>();
+            services.AddTransient<IWithdrawalLimit, WithdrawalLimitConcrete>();
+            services.AddTransient<ILoginStatus, LoginStatusConcrete>();
+            services.AddTransient<IAgent, AgentUserConcrete>();
+            services.AddTransient<IUserProfile, UserProfileConcrete>();
+            services.AddTransient<IAgentTransaction, AgentTransactionConcrete>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper>(implementationFactory =>
             {
@@ -98,18 +105,18 @@ namespace FreeFundsApi
             });
             #endregion
 
-            // Start Registering and Initializing AutoMapper
-            // Auto Mapper Configurations
+            services.AddControllers();
             var mappingConfig = new MapperConfiguration(mc =>
             {
-                mc.AddProfile(new MappingProfile());
+                mc.AddProfile(new AutoMapping());
             });
 
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
 
-            // End Registering and Initializing AutoMapper
+
+            //End Registering and Initializing AutoMapper
 
             services.AddMvc(options => { options.Filters.Add(typeof(CustomExceptionFilterAttribute)); })
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
@@ -161,7 +168,6 @@ namespace FreeFundsApi
 
 
             services.AddSwaggerDocumentation();
-            services.AddControllers();
         }
 
 
@@ -251,6 +257,7 @@ namespace FreeFundsApi
         }
         public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
         {
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

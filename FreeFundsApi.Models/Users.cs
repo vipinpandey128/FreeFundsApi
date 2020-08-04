@@ -19,6 +19,7 @@ namespace FreeFundsApi.Models
         public int? Createdby { get; set; }
         public DateTime CreatedDate { get; set; }
         public long CurrentBal { get; set; }
+        public int WithDrawalPin { get; set; }
         public bool IsTermsAndConditions { get; set; }
         public bool IsPasswordUpdated { get; set; }
         public bool Status { get; set; }

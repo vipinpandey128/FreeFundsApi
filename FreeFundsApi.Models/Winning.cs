@@ -16,5 +16,6 @@ namespace FreeFundsApi.Models
         public DateTime CreatedDate { get; set; }
         public int UserId { get; set; }
         public virtual Users Users { get; set; }
+        public virtual Bet Bets { get; set; }
     }
 }

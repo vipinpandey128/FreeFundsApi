@@ -12,6 +12,8 @@ namespace FreeFundsApi.ViewModels
     {
         [Required(ErrorMessage = "SchemeName is Required")]
         public string SchemeName { get; set; }
+        [Required(ErrorMessage = "Win Percentage is Required")]
+        public decimal WinPer { get; set; }
 
         public bool Status { get; set; }
     }
@@ -22,6 +24,8 @@ namespace FreeFundsApi.ViewModels
 
         [Required(ErrorMessage = "SchemeName is Required")]
         public string SchemeName { get; set; }
+        [Required(ErrorMessage = "Win Percentage is Required")]
+        public decimal WinPer { get; set; }
 
         public bool Status { get; set; }
     }

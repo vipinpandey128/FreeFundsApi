@@ -11,23 +11,49 @@ namespace FreeFundsApi.Concrete.Migrations
                 name: "dbo");
 
             migrationBuilder.CreateTable(
-                name: "AllGame",
+                name: "PaymentTransaction",
                 columns: table => new
                 {
-                    GameId = table.Column<long>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GameName = table.Column<string>(nullable: true),
-                    SchemeId = table.Column<int>(nullable: false),
-                    StartTime = table.Column<TimeSpan>(nullable: false),
-                    EndTime = table.Column<TimeSpan>(nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    EndDate = table.Column<DateTime>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    IsActive = table.Column<bool>(nullable: false)
+                    TransactionAmount = table.Column<decimal>(nullable: false),
+                    UserID = table.Column<int>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    TransactionId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AllGame", x => x.GameId);
+                    table.PrimaryKey("PK_PaymentTransaction", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SchemeMaster",
+                columns: table => new
+                {
+                    SchemeID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SchemeName = table.Column<string>(nullable: true),
+                    WinPer = table.Column<decimal>(nullable: false),
+                    Createdby = table.Column<int>(nullable: false),
+                    Createddate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SchemeMaster", x => x.SchemeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TermsAndConditions",
+                columns: table => new
+                {
+                    TermId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Terms = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TermsAndConditions", x => x.TermId);
                 });
 
             migrationBuilder.CreateTable(
@@ -145,23 +171,6 @@ namespace FreeFundsApi.Concrete.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SchemeMaster",
-                schema: "dbo",
-                columns: table => new
-                {
-                    SchemeID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SchemeName = table.Column<string>(nullable: true),
-                    Createdby = table.Column<int>(nullable: false),
-                    Createddate = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SchemeMaster", x => x.SchemeID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TransactionType",
                 schema: "dbo",
                 columns: table => new
@@ -183,17 +192,18 @@ namespace FreeFundsApi.Concrete.Migrations
                 {
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(nullable: true),
-                    FullName = table.Column<string>(nullable: true),
-                    EmailId = table.Column<string>(nullable: true),
-                    Contactno = table.Column<string>(nullable: true),
+                    UserName = table.Column<string>(maxLength: 10, nullable: true),
+                    FullName = table.Column<string>(maxLength: 20, nullable: true),
+                    EmailId = table.Column<string>(maxLength: 25, nullable: true),
+                    Contactno = table.Column<string>(maxLength: 15, nullable: true),
                     Password = table.Column<string>(nullable: true),
                     Createdby = table.Column<int>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     CurrentBal = table.Column<long>(nullable: false, defaultValueSql: "0"),
+                    WithDrawalPin = table.Column<int>(nullable: false),
                     IsTermsAndConditions = table.Column<bool>(nullable: false, defaultValueSql: "0"),
                     IsPasswordUpdated = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    Status = table.Column<bool>(nullable: false, defaultValueSql: "0")
+                    Status = table.Column<bool>(nullable: false, defaultValueSql: "1")
                 },
                 constraints: table =>
                 {
@@ -216,31 +226,61 @@ namespace FreeFundsApi.Concrete.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AllGame",
+                columns: table => new
+                {
+                    GameId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GameName = table.Column<string>(nullable: true),
+                    StartTime = table.Column<string>(nullable: true),
+                    EndTime = table.Column<string>(nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false),
+                    SchemeID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AllGame", x => x.GameId);
+                    table.ForeignKey(
+                        name: "FK_AllGame_SchemeMaster_SchemeID",
+                        column: x => x.SchemeID,
+                        principalTable: "SchemeMaster",
+                        principalColumn: "SchemeID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AllTransaction",
                 columns: table => new
                 {
                     TransactionId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TransactionTypeId = table.Column<int>(nullable: false),
-                    BetId = table.Column<long>(nullable: false),
-                    BetAmount = table.Column<decimal>(nullable: false),
                     CurrentBal = table.Column<decimal>(nullable: false, defaultValueSql: "0"),
                     CreatedBy = table.Column<int>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    TransactionAmount = table.Column<decimal>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     IsActive = table.Column<bool>(nullable: false, defaultValueSql: "0"),
-                    IpAddress = table.Column<string>(nullable: true),
+                    IpAddress = table.Column<string>(maxLength: 25, nullable: true),
+                    RecordId = table.Column<long>(nullable: false),
                     UserId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AllTransaction", x => x.TransactionId);
                     table.ForeignKey(
+                        name: "FK_AllTransaction_TransactionType_TransactionTypeId",
+                        column: x => x.TransactionTypeId,
+                        principalSchema: "dbo",
+                        principalTable: "TransactionType",
+                        principalColumn: "TransationTypeId");
+                    table.ForeignKey(
                         name: "FK_AllTransaction_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "dbo",
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -249,42 +289,16 @@ namespace FreeFundsApi.Concrete.Migrations
                 {
                     LoginStatusId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LastLogin = table.Column<DateTime>(nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "datetime", nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false),
+                    IpAddress = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LoginStatus", x => x.LoginStatusId);
                     table.ForeignKey(
                         name: "FK_LoginStatus_Users_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "dbo",
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Bet",
-                schema: "dbo",
-                columns: table => new
-                {
-                    BetId = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SchemeID = table.Column<int>(nullable: false),
-                    BetNumber = table.Column<int>(nullable: false),
-                    CreatedBy = table.Column<int>(nullable: false),
-                    BetAmount = table.Column<int>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bet", x => x.BetId);
-                    table.ForeignKey(
-                        name: "FK_Bet_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "dbo",
                         principalTable: "Users",
@@ -340,6 +354,54 @@ namespace FreeFundsApi.Concrete.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Bet",
+                schema: "dbo",
+                columns: table => new
+                {
+                    BetId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BetNumber = table.Column<int>(nullable: false),
+                    CreatedBy = table.Column<int>(nullable: false),
+                    BetAmount = table.Column<int>(nullable: false),
+                    WinPer = table.Column<decimal>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<bool>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
+                    TransactionId = table.Column<long>(nullable: false),
+                    GameId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bet", x => x.BetId);
+                    table.ForeignKey(
+                        name: "FK_Bet_AllGame_GameId",
+                        column: x => x.GameId,
+                        principalTable: "AllGame",
+                        principalColumn: "GameId");
+                    table.ForeignKey(
+                        name: "FK_Bet_AllTransaction_TransactionId",
+                        column: x => x.TransactionId,
+                        principalTable: "AllTransaction",
+                        principalColumn: "TransactionId");
+                    table.ForeignKey(
+                        name: "FK_Bet_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dbo",
+                        principalTable: "Users",
+                        principalColumn: "UserId");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AllGame_SchemeID",
+                table: "AllGame",
+                column: "SchemeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AllTransaction_TransactionTypeId",
+                table: "AllTransaction",
+                column: "TransactionTypeId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AllTransaction_UserId",
                 table: "AllTransaction",
@@ -349,6 +411,18 @@ namespace FreeFundsApi.Concrete.Migrations
                 name: "IX_LoginStatus_UserId",
                 table: "LoginStatus",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bet_GameId",
+                schema: "dbo",
+                table: "Bet",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bet_TransactionId",
+                schema: "dbo",
+                table: "Bet",
+                column: "TransactionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bet_UserId",
@@ -372,13 +446,13 @@ namespace FreeFundsApi.Concrete.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AllGame");
-
-            migrationBuilder.DropTable(
-                name: "AllTransaction");
-
-            migrationBuilder.DropTable(
                 name: "LoginStatus");
+
+            migrationBuilder.DropTable(
+                name: "PaymentTransaction");
+
+            migrationBuilder.DropTable(
+                name: "TermsAndConditions");
 
             migrationBuilder.DropTable(
                 name: "Bet",
@@ -405,14 +479,6 @@ namespace FreeFundsApi.Concrete.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "SchemeMaster",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "TransactionType",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
                 name: "UsersInRoles",
                 schema: "dbo");
 
@@ -422,6 +488,19 @@ namespace FreeFundsApi.Concrete.Migrations
 
             migrationBuilder.DropTable(
                 name: "WithdrawalLimit",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "AllGame");
+
+            migrationBuilder.DropTable(
+                name: "AllTransaction");
+
+            migrationBuilder.DropTable(
+                name: "SchemeMaster");
+
+            migrationBuilder.DropTable(
+                name: "TransactionType",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
