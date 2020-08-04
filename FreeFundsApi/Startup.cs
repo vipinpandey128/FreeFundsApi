@@ -80,13 +80,9 @@ namespace FreeFundsApi
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddTransient<ISchemeMaster, SchemeMasterConcrete>();
-            services.AddTransient<IPlanMaster, PlanMasterConcrete>();
-            services.AddTransient<IPeriodMaster, PeriodMasterConcrete>();
             services.AddTransient<IRole, RoleConcrete>();
-            services.AddTransient<IMemberRegistration, MemberRegistrationConcrete>();
             services.AddTransient<IUsers, UsersConcrete>();
             services.AddTransient<IUsersInRoles, UsersInRolesConcrete>();
-            services.AddTransient<IPaymentDetails, PaymentDetailsConcrete>();
             services.AddTransient<IRenewal, RenewalConcrete>();
             services.AddTransient<IReports, ReportsMaster>();
             services.AddTransient<IGenerateRecepit, GenerateRecepitConcrete>();
@@ -99,6 +95,8 @@ namespace FreeFundsApi
             services.AddTransient<IWithdrawalLimit, WithdrawalLimitConcrete>();
             services.AddTransient<ILoginStatus, LoginStatusConcrete>();
             services.AddTransient<IAgent, AgentUserConcrete>();
+            services.AddTransient<IUserProfile, UserProfileConcrete>();
+            services.AddTransient<IAgentTransaction, AgentTransactionConcrete>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<IUrlHelper>(implementationFactory =>
             {

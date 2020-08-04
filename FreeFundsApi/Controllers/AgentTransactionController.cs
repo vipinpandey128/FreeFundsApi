@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FreeFundsApi.Interface;
+using FreeFundsApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using FreeFundsApi.Interface;
-using FreeFundsApi.ViewModels;
 
 namespace FreeFundsApi.Controllers
 {
@@ -15,20 +15,21 @@ namespace FreeFundsApi.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class RenewalDetailsController : ControllerBase
+    public class AgentTransactionController : ControllerBase
     {
-        private readonly IRenewal _renewal;
-        public RenewalDetailsController(IRenewal renewal)
+        private readonly IAgentTransaction _agentTransaction;
+
+        public AgentTransactionController(IAgentTransaction agentTransaction)
         {
-            _renewal = renewal;
+            _agentTransaction = agentTransaction;
         }
-          
-        // POST: api/RenewalDetails
-        [HttpPost]
-        public RenewalViewModel Post([FromBody] MemberNoRequest memberNoRequest)
+
+        // GET: api/AgentTransaction
+        [HttpGet]
+        public async Task<IEnumerable<AgentTransactionViewModel>> GetAllTransactions()
         {
             var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
-            return _renewal.GetMemberNo(memberNoRequest.MemberNo, userId);
+            return await _agentTransaction.getAllAgentTransaction(userId);
         }
     }
 }

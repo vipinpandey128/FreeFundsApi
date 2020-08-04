@@ -16,5 +16,6 @@ namespace FreeFundsApi.Interface
         Task<LoginResponse> GetUserDetailsbyCredentialsAsync(string username, int loginId);
         Task<UsersViewModel> GetAgentUserDetailsByFilterTypeAsync(string searchData, int filterType, int loginId);
         Task<decimal> CheckUserBalanceAsync(int userid, int loginId);
+        Task<decimal> CheckAgentBalanceAsync(int agentId);
     }
 }

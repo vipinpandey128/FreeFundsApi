@@ -109,9 +109,6 @@ namespace FreeFundsApi.Concrete.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("AllTransactionsTransactionId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("BetAmount")
                         .HasColumnType("int");
 
@@ -130,6 +127,9 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<long>("TransactionId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -138,9 +138,9 @@ namespace FreeFundsApi.Concrete.Migrations
 
                     b.HasKey("BetId");
 
-                    b.HasIndex("AllTransactionsTransactionId");
-
                     b.HasIndex("GameId");
+
+                    b.HasIndex("TransactionId");
 
                     b.HasIndex("UserId");
 
@@ -442,6 +442,21 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.ToTable("SchemeMaster");
                 });
 
+            modelBuilder.Entity("FreeFundsApi.Models.TermsAndConditions", b =>
+                {
+                    b.Property<int>("TermId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Terms")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TermId");
+
+                    b.ToTable("TermsAndConditions");
+                });
+
             modelBuilder.Entity("FreeFundsApi.Models.TransactionType", b =>
                 {
                     b.Property<int>("TransationTypeId")
@@ -512,6 +527,9 @@ namespace FreeFundsApi.Concrete.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
+
+                    b.Property<int>("WithDrawalPin")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId");
 
@@ -614,13 +632,15 @@ namespace FreeFundsApi.Concrete.Migrations
 
             modelBuilder.Entity("FreeFundsApi.Models.Bet", b =>
                 {
-                    b.HasOne("FreeFundsApi.Models.AllTransaction", "AllTransactions")
-                        .WithMany()
-                        .HasForeignKey("AllTransactionsTransactionId");
-
                     b.HasOne("FreeFundsApi.Models.AllGame", "AllGame")
                         .WithMany("Bets")
                         .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FreeFundsApi.Models.AllTransaction", "AllTransactions")
+                        .WithMany("Bets")
+                        .HasForeignKey("TransactionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

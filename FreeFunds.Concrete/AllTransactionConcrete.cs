@@ -36,30 +36,49 @@ namespace FreeFundsApi.Concrete
             {
                 try
                 {
-                    var currentBal = await context.Users.Where(aa => aa.UserId == transaction.UserId).Select(aa => aa.CurrentBal).FirstOrDefaultAsync();
-                    transaction.CurrentBal = currentBal;
-                    await context.AllTransactions.AddAsync(transaction);
-                    long transactionID = await context.SaveChangesAsync();
-                    if (transactionID > 0)
+                    if (transaction.TransactionTypeId == 4)
                     {
-                        await context.PaymentTransactions.AddAsync(new PaymentTransaction
+                        var currentBal = await context.Users.Where(aa => aa.UserId == transaction.UserId).Select(aa => aa.CurrentBal).FirstOrDefaultAsync();
+                        transaction.CurrentBal = currentBal;
+                        await context.AllTransactions.AddAsync(transaction);
+                        long transactionID = await context.SaveChangesAsync();
+                        if (transactionID > 0)
                         {
-                            CreatedDate = DateTime.Now,
-                            TransactionAmount = transaction.TransactionAmount,
-                            TransactionId = transactionID,
-                            UserID = transaction.CreatedBy
-                        });
+                            await context.PaymentTransactions.AddAsync(new PaymentTransaction
+                            {
+                                CreatedDate = DateTime.Now,
+                                TransactionAmount = transaction.TransactionAmount,
+                                TransactionId = transactionID,
+                                UserID = transaction.CreatedBy
+                            });
 
-                        long paymnetId = await context.SaveChangesAsync();
-                        if (paymnetId > 0)
+                            long paymnetId = await context.SaveChangesAsync();
+                            if (paymnetId > 0)
+                            {
+                                await DBtransaction.CommitAsync();
+                            }
+                            else
+                            {
+                                await DBtransaction.RollbackAsync();
+                            }
+                            return transactionID;
+                        }
+                    }
+                    else if (transaction.TransactionTypeId == 3)
+                    {
+                        var currentBal = await context.Users.Where(aa => aa.UserId == transaction.UserId).Select(aa => aa.CurrentBal).FirstOrDefaultAsync();
+                        transaction.CurrentBal = currentBal;
+                        await context.AllTransactions.AddAsync(transaction);
+                        long transactionID = await context.SaveChangesAsync();
+                        if (transactionID > 0)
                         {
                             await DBtransaction.CommitAsync();
+                            return transactionID;
                         }
                         else
                         {
                             await DBtransaction.RollbackAsync();
                         }
-                        return transactionID;
                     }
                     return 0;
                 }

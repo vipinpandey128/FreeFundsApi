@@ -37,7 +37,7 @@ namespace FreeFundsApi.Concrete
                 return await (from user in userDM
                               join userRole in _context.UsersInRoles on user.UserId equals userRole.UserId
                               join role in _context.Role on userRole.RoleId equals role.RoleId
-                              where user.Contactno == searchData && role.RoleName == "User" && user.Createdby== loginId
+                              where user.Contactno == searchData && role.RoleName == "User" && user.Createdby == loginId
                               select new UsersViewModel
                               {
                                   Contactno = user.Contactno,
@@ -72,7 +72,7 @@ namespace FreeFundsApi.Concrete
             {
                 var result = await (from user in _context.Users
                                     join userinrole in _context.UsersInRoles on user.UserId equals userinrole.UserId
-                                    where user.UserName == username && userinrole.RoleId== 3 && user.Createdby == loginId
+                                    where user.UserName == username && userinrole.RoleId == 3 && user.Createdby == loginId
 
                                     select new LoginResponse
                                     {
@@ -100,10 +100,12 @@ namespace FreeFundsApi.Concrete
             if (removeuser != null)
             {
                 _context.Users.Remove(removeuser);
+               // _context.UsersInRoles.Remove(new UsersInRoles { UserId = removeuser.UserId,RoleId=rolei});
                 var result = await _context.SaveChangesAsync();
 
                 if (result > 0)
                 {
+
                     return true;
                 }
                 else
@@ -121,7 +123,7 @@ namespace FreeFundsApi.Concrete
         {
             var result = await (from user in _context.Users
                                 join userinrole in _context.UsersInRoles on user.UserId equals userinrole.UserId
-                                where user.Status == true && userinrole.RoleId == 3 && user.Createdby== loginId
+                                where user.Status == true && userinrole.RoleId == 3 && user.Createdby == loginId
                                 select user).ToListAsync();
 
             return result;
@@ -131,7 +133,7 @@ namespace FreeFundsApi.Concrete
         {
             var result = await (from user in _context.Users
                                 join userinrole in _context.UsersInRoles on user.UserId equals userinrole.UserId
-                                where user.UserId == userId && userinrole.RoleId == 3 && user.Createdby== loginId
+                                where user.UserId == userId && userinrole.RoleId == 3 && user.Createdby == loginId
                                 select user).FirstOrDefaultAsync();
 
             return result;
@@ -143,7 +145,7 @@ namespace FreeFundsApi.Concrete
             {
                 try
                 {
-
+                    user.WithDrawalPin = 0;
                     _context.Users.Add(user);
                     var UserId = await _context.SaveChangesAsync();
                     if (UserId > 0)
@@ -163,13 +165,18 @@ namespace FreeFundsApi.Concrete
                         return false;
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     await DBtransaction.RollbackAsync();
                     throw;
                 }
             }
 
+        }
+
+        public async Task<decimal> CheckAgentBalanceAsync(int agentId)
+        {
+            return await (_context.Users.Where(aa => aa.UserId == agentId).Select(aa => aa.CurrentBal).FirstOrDefaultAsync());
         }
 
 
@@ -192,9 +199,9 @@ namespace FreeFundsApi.Concrete
             }
         }
 
-        public async Task<decimal> CheckUserBalanceAsync(int userid,int loginId)
+        public async Task<decimal> CheckUserBalanceAsync(int userid, int loginId)
         {
-            return await _context.Users.Where(user => user.UserId == userid && user.Createdby== loginId).Select(user => user.CurrentBal).FirstOrDefaultAsync();
+            return await _context.Users.Where(user => user.UserId == userid && user.Createdby == loginId).Select(user => user.CurrentBal).FirstOrDefaultAsync();
         }
 
     }

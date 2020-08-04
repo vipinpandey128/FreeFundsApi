@@ -46,6 +46,14 @@ namespace FreeFundsApi.Controllers
             return await _users.GetUsersbyIdAsync(id, userId);
         }
 
+        [HttpGet]
+        [Route("getAgentBal")]
+        public async Task<decimal> GetAgentBal()
+        {
+            var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+            return await _users.CheckAgentBalanceAsync(userId);
+        }
+
         // GET: api/AgentUser/searchData/filterType
         [HttpGet("{searchData}/{filterType}", Name = "FilterAgentUser")]
         public async Task<UsersViewModel> GetAgentUserDetails([FromRoute] string searchData, [FromRoute] int filterType)
@@ -155,7 +163,5 @@ namespace FreeFundsApi.Controllers
                 return response;
             }
         }
-
-
     }
 }

@@ -14,6 +14,7 @@ namespace FreeFundsApi.Concrete
 
         }
 
+        public DbSet<TermsAndConditions> TermsAndConditions { get; set; }
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
         public DbSet<AllTransaction> AllTransactions { get; set; }
         public DbSet<AllGame> AllGames { get; set; }
@@ -23,8 +24,6 @@ namespace FreeFundsApi.Concrete
         public DbSet<Winning> Winnings { get; set; }
         public DbSet<Bet> Bets { get; set; }
         public DbSet<SchemeMaster> SchemeMaster { get; set; }
-        public DbSet<PeriodTB> PeriodTb { get; set; }
-        public DbSet<PlanMaster> PlanMaster { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<MemberRegistration> MemberRegistration { get; set; }
         public DbSet<Users> Users { get; set; }
@@ -51,12 +50,21 @@ namespace FreeFundsApi.Concrete
                     .WithMany(p => p.AllTransactions)
                     .HasForeignKey(d => d.TransactionTypeId)
                     .OnDelete(DeleteBehavior.NoAction);
+
+                
+
                 entity.Property(b => b.IsActive).HasDefaultValueSql("0");
                 entity.ToTable("AllTransaction").HasKey(ee => ee.TransactionId);
                 entity.Property(b => b.CurrentBal).HasDefaultValueSql("0");
                 entity.Property(ee => ee.CreatedDate).HasColumnType<DateTime>("datetime");
                 entity.Property(b => b.IpAddress).HasMaxLength(25);
+                entity.Ignore(e => e.pin);
 
+            });
+
+            modelBuilder.Entity<TermsAndConditions>(entity =>
+            {
+                entity.ToTable("TermsAndConditions").HasKey(ee => ee.TermId);
             });
 
             modelBuilder.Entity<PaymentTransaction>(entity =>
@@ -98,16 +106,19 @@ namespace FreeFundsApi.Concrete
             {
                 entity.ToTable("Winning", "dbo").HasKey(ee => ee.WinId);
                 entity.HasOne(p => p.Users)
-            .WithMany(b => b.Winnings).
-            HasForeignKey(p => p.UserId);
+                .WithMany(b => b.Winnings).
+                HasForeignKey(p => p.UserId);
+
+                entity.HasOne(p => p.Bets)
+                .WithMany(b => b.Winnings).
+                HasForeignKey(p => p.BetId);
             });
-
-
-
-            modelBuilder.Entity<Bet>().ToTable("Bet", "dbo").HasKey(ee => ee.BetId);
+             
 
             modelBuilder.Entity<Bet>(entity =>
             {
+                entity.ToTable("Bet", "dbo").HasKey(ee => ee.BetId);
+
                 entity.HasOne(d => d.AllGame)
                 .WithMany(p => p.Bets)
                 .HasForeignKey(d => d.GameId)
@@ -117,6 +128,11 @@ namespace FreeFundsApi.Concrete
                .WithMany(p => p.Bets)
                .HasForeignKey(d => d.UserId)
                .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(d => d.AllTransactions)
+                   .WithMany(p => p.Bets)
+                   .HasForeignKey(d => d.TransactionId)
+                   .OnDelete(DeleteBehavior.NoAction);
             });
 
 
@@ -127,17 +143,7 @@ namespace FreeFundsApi.Concrete
             });
 
 
-            modelBuilder.Entity<PeriodTB>().ToTable("PeriodTB", "dbo").HasKey(ee => ee.PeriodID);
-
-
-            modelBuilder.Entity<PlanMaster>().ToTable("PlanMaster", "dbo").HasKey(ee => ee.PlanID);
-
-
             modelBuilder.Entity<Role>().ToTable("Role", "dbo").HasKey(ee => ee.RoleId);
-
-
-            modelBuilder.Entity<MemberRegistration>().ToTable("MemberRegistration", "dbo").HasKey(ee => ee.MemberId);
-
 
             modelBuilder.Entity<Users>(entity =>
             {
@@ -153,10 +159,6 @@ namespace FreeFundsApi.Concrete
                 entity.Property(b => b.CreatedDate).HasColumnType<DateTime>("datetime");
             });
             
-
-
-
-
             modelBuilder.Entity<UsersInRoles>(entity =>
             {
                 entity.ToTable("UsersInRoles", "dbo").HasKey(ee => ee.UserRolesId);
@@ -165,10 +167,7 @@ namespace FreeFundsApi.Concrete
                 HasForeignKey(p => p.UserId);
             });
 
-            modelBuilder.Entity<PaymentDetails>(entity =>
-            {
-                entity.ToTable("PaymentDetails", "dbo").HasKey(ee => ee.PaymentID);
-            });
+           
         }
         
     }

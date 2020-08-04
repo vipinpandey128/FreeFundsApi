@@ -53,42 +53,52 @@ namespace FreeFundsApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<HttpResponseMessage> PostAllTransaction([FromBody] AllTransaction allTransaction)
+        public async Task<HttpResponseMessage> PostAllTransaction([FromBody] TransactionViewModel allTransaction)
         {
             try
             {
-                var userId = this.User.FindFirstValue(ClaimTypes.Name);
-                var userCurrentBal = await _user.CheckUserBalanceAsync(Convert.ToInt32(userId));
-
-                if (userCurrentBal >= allTransaction.TransactionAmount)
+                if (!await _user.ValidateUserByPin(allTransaction.UserId, allTransaction.pin))
                 {
-                    allTransaction.CreatedBy = Convert.ToInt32(userId);
-                    allTransaction.CreatedDate = DateTime.Now;
-                    allTransaction.RecordId = 0;
-                    allTransaction.IsActive = true;
-                    long transactionIDAgent = await _allTransaction.InsertTransactionAsync(allTransaction);
-                    if (transactionIDAgent > 0)
+                    return new HttpResponseMessage()
                     {
-                        return new HttpResponseMessage()
+                        StatusCode = HttpStatusCode.Unauthorized
+                    };
+                }
+
+                   var userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.Name));
+
+                    var userCurrentBal = await _user.CheckUserBalanceAsync(allTransaction.TransactionTypeId==3?allTransaction.UserId:userId);
+                    var tempTransaction = mapper.Map<AllTransaction>(allTransaction);
+                    if (userCurrentBal >= allTransaction.TransactionAmount)
+                    {
+                        tempTransaction.CreatedBy = Convert.ToInt32(userId);
+                        tempTransaction.CreatedDate = DateTime.Now;
+                        tempTransaction.RecordId = 0;
+                        tempTransaction.IsActive = true;
+                        long transactionIDAgent = await _allTransaction.InsertTransactionAsync(tempTransaction);
+                        if (transactionIDAgent > 0)
                         {
-                            StatusCode = HttpStatusCode.OK
-                        };
+                            return new HttpResponseMessage()
+                            {
+                                StatusCode = HttpStatusCode.OK
+                            };
+                        }
+                        else
+                        {
+                            return new HttpResponseMessage()
+                            {
+                                StatusCode = HttpStatusCode.InternalServerError
+                            };
+                        }
                     }
                     else
                     {
                         return new HttpResponseMessage()
                         {
-                            StatusCode = HttpStatusCode.InternalServerError
+                            StatusCode = HttpStatusCode.BadRequest
                         };
                     }
-                }
-                else
-                {
-                    return new HttpResponseMessage()
-                    {
-                        StatusCode = HttpStatusCode.BadRequest
-                    };
-                }
+                 
             }
             catch (Exception ex)
             {

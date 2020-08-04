@@ -13,9 +13,11 @@ namespace FreeFundsApi.Models
         public DateTime CreatedDate { get; set; }
         public bool Status { get; set; }
         public int UserId { get; set; }
+        public long TransactionId { get; set; }
         public virtual Users Users { get; set; }
         public long GameId { get; set; }
         public virtual AllGame AllGame { get; set; }
         public virtual AllTransaction AllTransactions { get; set; }
+        public virtual List<Winning> Winnings { get; set; }
     }
 }

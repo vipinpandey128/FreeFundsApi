@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 namespace FreeFundsApi.Models
 {
@@ -15,8 +16,10 @@ namespace FreeFundsApi.Models
         public string IpAddress { get; set; }
         public long RecordId { get; set; }
         public int UserId { get; set; }
+        public int pin { get; set; }
         public virtual Users Users { get; set; }
         public virtual TransactionType TransactionType { get; set; }
+        public virtual List<Bet> Bets { get; set; }
 
     }
 }

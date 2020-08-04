@@ -175,6 +175,11 @@ namespace FreeFundsApi.Concrete
             }
         }
 
+        public async Task<bool> ValidateUserByPin(int userid, int pin)
+        {
+            return await _context.Users.Where(ee => ee.UserId == userid && ee.WithDrawalPin == pin).AnyAsync();
+        }
+
         public async Task<decimal> CheckUserBalanceAsync(int userid)
         {
             return await _context.Users.Where(user => user.UserId == userid).Select(user => user.CurrentBal).FirstOrDefaultAsync();
